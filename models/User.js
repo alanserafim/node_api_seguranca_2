@@ -1,4 +1,4 @@
-const getDb = require('../util/database')
+const { getDb } = require("../util/database")
 
 class User {
     constructor(username, email, password) {
@@ -10,6 +10,12 @@ class User {
     async save() {
         const db = getDb()
         return db.collection('users').insertOne(this)
+    }
+
+    static async findOne(email, password) {
+        const db = getDb()
+        const user = await db.collection('users').findOne({email: email, password: password})
+        return user
     }
 }
 
