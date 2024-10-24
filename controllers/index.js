@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 exports.showIndex = (req, res, next) => {
     res.render('index')
@@ -18,7 +19,8 @@ exports.get404Page = (req, res, next) => {
 
 exports.signup = async (req, res, next) => {
     const { username, email, password } = req.body
-    const user = new User(username, email, password)
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User(username, email, hashedPassword)
     try {
         await user.save()
         res.redirect('/members')
@@ -43,3 +45,12 @@ exports.login = async (req, res, next) => {
         res.render("/")
     }
 }
+
+exports.checkAuth = (req, res, next) => {
+    const auth = false
+    if (auth) {
+      next()
+    } else {
+      res.redirect('/')
+    }
+  }
